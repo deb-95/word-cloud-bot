@@ -16,6 +16,14 @@ def get_user_id(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=chat_id, text=f"Here is your ID: {user_id}")
 
 
+def generate_image(chat_id):
+    directory = path.dirname(__file__) if "__file__" in locals() else getcwd()
+    text = open(path.join(directory, f'groups/{chat_id}_messages.txt')).read()
+    wc: WordCloud = WordCloud().generate(text)
+    image = wc.to_image()
+    return image
+
+
 class HandlersContainer:
     settings: Settings = None
 
@@ -41,7 +49,8 @@ class HandlersContainer:
     def make_word_cloud(self, update: Update, context: CallbackContext):
         chat_id = str(update.effective_chat.id)
         if chat_id in self.settings.settings["groups"]:
-            directory = path.dirname(__file__) if "__file__" in locals() else getcwd()
-            text = open(path.join(directory, f'groups/{chat_id}_messages.txt')).read()
-            wc: WordCloud = WordCloud().generate(text)
-            context.bot.send_photo(wc.to_image())
+            image_path = f"/tmp/{chat_id}.png"
+            image = generate_image(chat_id)
+            image.save(image_path, "PNG")
+            with open(image_path, 'rb') as photo_to_send:
+                context.bot.send_photo(update.effective_chat.id, photo_to_send)
