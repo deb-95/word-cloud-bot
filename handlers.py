@@ -1,7 +1,9 @@
+from os import path, getcwd
 from telegram import Message
 from telegram.ext import CallbackContext
 from telegram.update import Update
 from utils.settings import Settings
+from wordcloud import WordCloud
 
 
 def start(update: Update, context: CallbackContext):
@@ -35,3 +37,11 @@ class HandlersContainer:
             message: Message = update.message
             with open(f"groups/{chat_id}_messages.txt", "a") as file_to_write:
                 file_to_write.write(f"{message.text}\n")
+
+    def make_word_cloud(self, update: Update, context: CallbackContext):
+        chat_id = str(update.effective_chat.id)
+        if chat_id in self.settings.settings["groups"]:
+            directory = path.dirname(__file__) if "__file__" in locals() else getcwd()
+            text = open(path.join(directory, f'groups/{chat_id}_messages.txt')).read()
+            wc: WordCloud = WordCloud().generate(text)
+            context.bot.send_photo(wc.to_image())
