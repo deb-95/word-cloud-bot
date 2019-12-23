@@ -27,7 +27,7 @@ def generate_image(chat_id):
 class HandlersContainer:
     settings: Settings = None
 
-    def __init__(self, settings):
+    def __init__(self, settings: Settings):
         self.settings = settings
 
     def add_chat_to_allowed(self, update: Update, context: CallbackContext):

@@ -9,7 +9,7 @@ class Settings:
     def __init__(self):
         self.settings = json.loads(open(self.settings_filename).read())
 
-    def add_to_list(self, list_name, string):
+    def add_to_list(self, list_name: str, string: str):
         if self.settings.get(list_name):
             list_to_edit: List = self.settings[list_name]
             list_to_edit.append(string)

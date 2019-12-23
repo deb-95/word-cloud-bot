@@ -14,7 +14,7 @@ def main():
     updater.start_polling()
 
 
-def set_handlers(handlers_obj, updater):
+def set_handlers(handlers_obj: HandlersContainer, updater: Updater):
     start_handler = CommandHandler('start', start)
     user_id_handler = CommandHandler('userid', get_user_id)
     add_group_handler = CommandHandler('addgroup', handlers_obj.add_chat_to_allowed)
