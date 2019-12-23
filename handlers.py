@@ -1,3 +1,4 @@
+from telegram import Message
 from telegram.ext import CallbackContext
 from telegram.update import Update
 from utils.settings import Settings
@@ -27,3 +28,10 @@ class HandlersContainer:
             context.bot.send_message(chat_id=chat_id, text=f"Done.")
         else:
             context.bot.send_message(chat_id=chat_id, text=f"You are not allowed.")
+
+    def save_message(self, update: Update, context: CallbackContext):
+        chat_id = str(update.effective_chat.id)
+        if chat_id in self.settings.settings["groups"]:
+            message: Message = update.message
+            with open(f"groups/{chat_id}_messages.txt", "a") as file_to_write:
+                file_to_write.write(f"{message.text}\n")
